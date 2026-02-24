@@ -11,21 +11,6 @@ import os
 
 app = Flask(__name__)
 
-# Create static folder if not exists
-if not os.path.exists("static"):
-    os.makedirs("static")
-
-# Generate chart: Actual vs Predicted marks
-plt.figure(figsize=(6,4))
-plt.scatter(y_test, y_pred, color='blue')
-plt.plot([min(y_test), max(y_test)], [min(y_test), max(y_test)], color='red', linestyle='--')
-plt.xlabel("Actual Marks")
-plt.ylabel("Predicted Marks")
-plt.title("Actual vs Predicted Marks")
-plt.tight_layout()
-plt.savefig("static/chart.png")
-plt.close()
-
 # Load dataset
 data = pd.read_csv("student_dataset.csv")
 X = data[["study_hours", "attendance", "assignment"]]
@@ -48,6 +33,21 @@ else:
 y_pred = model.predict(X_test)
 r2 = round(r2_score(y_test, y_pred), 3)
 mae = round(mean_absolute_error(y_test, y_pred), 3)
+
+# Create static folder if not exists
+if not os.path.exists("static"):
+    os.makedirs("static")
+
+# Generate chart: Actual vs Predicted marks
+plt.figure(figsize=(6,4))
+plt.scatter(y_test, y_pred, color='blue')
+plt.plot([min(y_test), max(y_test)], [min(y_test), max(y_test)], color='red', linestyle='--')
+plt.xlabel("Actual Marks")
+plt.ylabel("Predicted Marks")
+plt.title("Actual vs Predicted Marks")
+plt.tight_layout()
+plt.savefig("static/chart.png")
+plt.close()
 
 @app.route("/", methods=["GET", "POST"])
 def index():
