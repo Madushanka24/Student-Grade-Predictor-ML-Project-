@@ -6,8 +6,25 @@ from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, mean_absolute_error
 from flask import Flask, render_template, request
+import matplotlib.pyplot as plt
+import os
 
 app = Flask(__name__)
+
+# Create static folder if not exists
+if not os.path.exists("static"):
+    os.makedirs("static")
+
+# Generate chart: Actual vs Predicted marks
+plt.figure(figsize=(6,4))
+plt.scatter(y_test, y_pred, color='blue')
+plt.plot([min(y_test), max(y_test)], [min(y_test), max(y_test)], color='red', linestyle='--')
+plt.xlabel("Actual Marks")
+plt.ylabel("Predicted Marks")
+plt.title("Actual vs Predicted Marks")
+plt.tight_layout()
+plt.savefig("static/chart.png")
+plt.close()
 
 # Load dataset
 data = pd.read_csv("student_dataset.csv")
