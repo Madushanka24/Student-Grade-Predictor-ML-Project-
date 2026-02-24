@@ -1,27 +1,39 @@
 from flask import Flask, render_template, request
 import numpy as np
-from sklearn.linear_model import LinearRegression
 import pandas as pd
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import r2_score, mean_absolute_error
 
 app = Flask(__name__)
 
-# Training Data
-X = np.array([
-    [2, 60, 50],
-    [4, 70, 60],
-    [6, 80, 70],
-    [8, 90, 85],
-    [10, 95, 90]
-])
-y = np.array([50, 60, 70, 85, 95])
+# Load Dataset
+data = pd.read_csv("student_dataset.csv")
 
+X = data[["study_hours", "attendance", "assignment"]]
+y = data["final_marks"]
+
+# Split data (80% training, 20% testing)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Train model
 model = LinearRegression()
-model.fit(X, y)
+model.fit(X_train, y_train)
+
+# Evaluate model
+y_pred = model.predict(X_test)
+
+r2 = r2_score(y_test, y_pred)
+mae = mean_absolute_error(y_test, y_pred)
+
+print("Model R2 Score:", round(r2, 3))
+print("Model MAE:", round(mae, 3))
 
 @app.route("/", methods=["GET", "POST"])
 def index():
     result = None
     grade = None
+
     if request.method == "POST":
         study_hours = float(request.form["study_hours"])
         attendance = float(request.form["attendance"])
@@ -31,7 +43,6 @@ def index():
         final_marks = round(prediction[0], 2)
         result = final_marks
 
-        # Grade classification
         if final_marks >= 85:
             grade = "A"
         elif final_marks >= 70:
@@ -40,15 +51,6 @@ def index():
             grade = "C"
         else:
             grade = "D"
-
-        # Optional: save input to CSV
-        data = {"Study Hours": [study_hours],
-                "Attendance": [attendance],
-                "Assignment": [assignment],
-                "Predicted Marks": [final_marks],
-                "Grade": [grade]}
-        df = pd.DataFrame(data)
-        df.to_csv("student_data.csv", mode="a", header=False, index=False)
 
     return render_template("index.html", result=result, grade=grade)
 
