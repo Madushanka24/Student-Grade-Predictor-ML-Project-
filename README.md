@@ -24,6 +24,12 @@ It features **interactive charts**, **live predictions**, and a modern **Bootstr
 
 <img width="1920" height="1080" alt="24 02 2026_13 46 35_REC" src="https://github.com/user-attachments/assets/920037ec-a312-43ae-bd63-e98f958e94a5" />
 
+
+
+https://github.com/user-attachments/assets/0f3af48e-49df-4b3a-9b7a-e4e421e50c45
+
+
+
 ## 🔹 Installation
 
 1. **Clone the repository**
