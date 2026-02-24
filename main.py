@@ -1,55 +1,41 @@
-from flask import Flask, render_template, request
-import numpy as np
+import os
+import joblib
 import pandas as pd
+import numpy as np
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, mean_absolute_error
-import joblib
-
-joblib.dump(model, "student_model.pkl")
-
-import matplotlib.pyplot as plt
-import os
-
-# Generate chart
-plt.scatter(y_test, y_pred)
-plt.xlabel("Actual Marks")
-plt.ylabel("Predicted Marks")
-plt.title("Actual vs Predicted Marks")
-plt.savefig("static/chart.png")
-plt.close()
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
-# Load Dataset
+# Load dataset
 data = pd.read_csv("student_dataset.csv")
-
 X = data[["study_hours", "attendance", "assignment"]]
 y = data["final_marks"]
 
-# Split data (80% training, 20% testing)
+# Split data
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# # Train model
-# model = LinearRegression()
-# model.fit(X_train, y_train)
+# Check if model exists
+if os.path.exists("student_model.pkl"):
+    model = joblib.load("student_model.pkl")
+else:
+    # Train model
+    model = LinearRegression()
+    model.fit(X_train, y_train)
+    # Save model
+    joblib.dump(model, "student_model.pkl")
 
 # Evaluate model
 y_pred = model.predict(X_test)
-
-r2 = r2_score(y_test, y_pred)
-mae = mean_absolute_error(y_test, y_pred)
-
-print("Model R2 Score:", round(r2, 3))
-print("Model MAE:", round(mae, 3))
+r2 = round(r2_score(y_test, y_pred), 3)
+mae = round(mean_absolute_error(y_test, y_pred), 3)
 
 @app.route("/", methods=["GET", "POST"])
 def index():
     result = None
     grade = None
-    model_r2 = round(r2, 3)
-    model_mae = round(mae, 3)
-
     if request.method == "POST":
         study_hours = float(request.form["study_hours"])
         attendance = float(request.form["attendance"])
@@ -72,8 +58,8 @@ def index():
         "index.html",
         result=result,
         grade=grade,
-        model_r2=model_r2,
-        model_mae=model_mae
+        model_r2=r2,
+        model_mae=mae
     )
 
 if __name__ == "__main__":
