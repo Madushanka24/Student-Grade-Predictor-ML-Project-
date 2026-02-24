@@ -33,6 +33,8 @@ print("Model MAE:", round(mae, 3))
 def index():
     result = None
     grade = None
+    model_r2 = round(r2, 3)
+    model_mae = round(mae, 3)
 
     if request.method == "POST":
         study_hours = float(request.form["study_hours"])
@@ -52,7 +54,13 @@ def index():
         else:
             grade = "D"
 
-    return render_template("index.html", result=result, grade=grade)
+    return render_template(
+        "index.html",
+        result=result,
+        grade=grade,
+        model_r2=model_r2,
+        model_mae=model_mae
+    )
 
 if __name__ == "__main__":
     app.run(debug=True)
