@@ -22,5 +22,14 @@
         <h2>Predicted Marks: {{ result }}</h2>
         <h2>Grade: {{ grade }}</h2>
     {% endif %}
+
+    {% if model_r2 %}
+    <p>Model Accuracy (R²): {{ model_r2 }}</p>
+    <p>Mean Absolute Error (MAE): {{ model_mae }}</p>
+    {% endif %}
+
+    {% if model_r2 %}
+    <img src="{{ url_for('static', filename='chart.png') }}" alt="Accuracy Chart" width="400">
+    {% endif %}
 </body>
 </html>

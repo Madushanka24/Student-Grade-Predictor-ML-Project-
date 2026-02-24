@@ -5,6 +5,17 @@ from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, mean_absolute_error
 
+import matplotlib.pyplot as plt
+import os
+
+# Generate chart
+plt.scatter(y_test, y_pred)
+plt.xlabel("Actual Marks")
+plt.ylabel("Predicted Marks")
+plt.title("Actual vs Predicted Marks")
+plt.savefig("static/chart.png")
+plt.close()
+
 app = Flask(__name__)
 
 # Load Dataset
