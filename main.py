@@ -4,6 +4,9 @@ import pandas as pd
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, mean_absolute_error
+import joblib
+
+joblib.dump(model, "student_model.pkl")
 
 import matplotlib.pyplot as plt
 import os
@@ -27,9 +30,9 @@ y = data["final_marks"]
 # Split data (80% training, 20% testing)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Train model
-model = LinearRegression()
-model.fit(X_train, y_train)
+# # Train model
+# model = LinearRegression()
+# model.fit(X_train, y_train)
 
 # Evaluate model
 y_pred = model.predict(X_test)
